@@ -36,6 +36,7 @@ class MainPage(webapp2.RequestHandler):
 
         if not valid_username(username_input):
             username_error = "This is not a valid username!"
+            username_input = ""
             have_error = True
 
         if not valid_password(password_input):
@@ -47,6 +48,7 @@ class MainPage(webapp2.RequestHandler):
 
         if not valid_email(email_input):
             email_error = "This is not a valid email"
+            email_input = ""
             have_error = True
     
         if have_error:
@@ -54,7 +56,9 @@ class MainPage(webapp2.RequestHandler):
                 "username_error": username_error,
                 "password_error": password_error,
                 "verify_error": verify_error,
-                "email_error": email_error
+                "email_error": email_error,
+                "username_value": username_input,
+                "email_value": email_input
                 }))
         else:
             self.redirect("/welcome?username=" + username_input)
@@ -68,7 +72,5 @@ class WelcomePage(webapp2.RequestHandler):
         else:
             self.redirect("/")
         
-
-       
 
 app = webapp2.WSGIApplication([('/', MainPage), ('/welcome', WelcomePage)], debug=True)
