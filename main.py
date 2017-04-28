@@ -52,7 +52,8 @@ class MainPage(webapp2.RequestHandler):
             have_error = True
     
         if have_error:
-            self.response.out.write(template.render(path, {"message": "Please correct mistakes", 
+            self.response.out.write(template.render(path, {
+                "message": "Please correct mistakes", 
                 "username_error": username_error,
                 "password_error": password_error,
                 "verify_error": verify_error,
