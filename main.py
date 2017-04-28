@@ -23,7 +23,7 @@ class MainPage(webapp2.RequestHandler):
 
     def post(self):
         path = os.path.join(os.path.dirname(__file__), 'templates/signup.html')
-        have_Error = False
+        have_error = False
         username_input = self.request.get("username")
         password_input = self.request.get("password")
         verify_input = self.request.get("verify")
@@ -36,19 +36,20 @@ class MainPage(webapp2.RequestHandler):
 
         if not valid_username(username_input):
             username_error = "This is not a valid username!"
-            have_Error = True
+            have_error = True
 
         if not valid_password(password_input):
             password_error = "This is not a valid password!"
-            have_Error = True
-        elif password_input!=verify_input:
+            have_error = True
+        elif password_input != verify_input:
             verify_error = "Passwords did not match"
+            have_error = True
 
         if not valid_email(email_input):
             email_error = "This is not a valid email"
-            have_Error = True
+            have_error = True
     
-        if have_Error:
+        if have_error:
             self.response.out.write(template.render(path, {"message": "Please correct mistakes", 
                 "username_error": username_error,
                 "password_error": password_error,
@@ -56,9 +57,18 @@ class MainPage(webapp2.RequestHandler):
                 "email_error": email_error
                 }))
         else:
-            self.response.out.write(template.render(path, {"message": "Well done!"}))
+            self.redirect("/welcome?username=" + username_input)
+
+class WelcomePage(webapp2.RequestHandler):
+    def get(self):
+        path = os.path.join(os.path.dirname(__file__), 'templates/welcome.html')
+        username = self.request.get("username") 
+        if valid_username(username):
+            self.response.out.write(template.render(path, {"username": username}))
+        else:
+            self.redirect("/")
         
 
        
 
-app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
+app = webapp2.WSGIApplication([('/', MainPage), ('/welcome', WelcomePage)], debug=True)
